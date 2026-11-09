@@ -1,64 +1,29 @@
-# Kick Chat (web + app instalable)
+# KickChat
 
-Cada persona entra con su propia cuenta de Kick: los tokens se guardan por usuario en el servidor (`sessions.json`) y nunca llegan al navegador.
+Cliente de chat de Kick para web y Android, pensado para leer y escribir en varios canales desde un solo lugar.
 
-## 1. Registrar la app en Kick
-En https://kick.com/settings/developer crea una app y registra como Redirect URI:
-`https://chat.yerson.site/callback`
-Copia el Client ID y el Client Secret.
+## Descargar la app para Android
 
-## 2. Instalar en tu servidor (Ubuntu/Debian)
-```bash
-sudo apt update && sudo apt install -y python3-venv caddy
-sudo useradd -r -m kickchat
-sudo mkdir -p /opt/kickchat && sudo cp -r ./* ./.env.example /opt/kickchat/
-cd /opt/kickchat
-sudo python3 -m venv venv && sudo venv/bin/pip install -r requirements.txt
-sudo cp .env.example .env && sudo nano .env      # rellena las 3 variables
-sudo chown -R kickchat:kickchat /opt/kickchat
-```
+[Descargar Kick_Chat.apk](download/Kick_Chat.apk)
 
-## 3. Dejarlo siempre encendido
-```bash
-sudo cp kickchat.service /etc/systemd/system/
-sudo systemctl enable --now kickchat
-sudo systemctl status kickchat
-```
+Para instalarla:
 
-## 4. HTTPS con tu dominio
-Apunta el DNS de tu dominio a la IP del servidor, edita `Caddyfile` (cambia `chat.yerson.site`) y:
-```bash
-sudo cp Caddyfile /etc/caddy/Caddyfile && sudo systemctl restart caddy
-```
-Abre `https://chat.yerson.site`. Prueba `https://chat.yerson.site/health`.
+1. Descarga el archivo `Kick_Chat.apk` en tu teléfono.
+2. Ábrelo. Si Android lo pide, permite instalar apps de origen desconocido para tu navegador o gestor de archivos.
+3. Abre KickChat e inicia sesión con tu cuenta de Kick.
 
-## 5. App descargable (APK)
-1. Entra a https://www.pwabuilder.com, pon tu dirección y pulsa Start.
-2. Package for stores → Android → genera el paquete.
-3. Sube el `.apk` a tu servidor (por ejemplo a `static/`) y enlázalo para descargar. Quien lo instale debe permitir "instalar apps de origen desconocido".
-4. Para Google Play usa el `.aab` y pon tu `assetlinks.json` en `static/assetlinks.json` (el servidor lo publica en `/.well-known/assetlinks.json`). La política de privacidad ya está en `/privacidad`.
+## Qué incluye
 
-Sin APK también funciona: en Chrome Android, menú → "Instalar app" (o el botón "Instalar app" del menú ⋮ de la propia página).
+- Inicio de sesión con tu propia cuenta de Kick. Tus datos de acceso se guardan en el servidor y nunca llegan al navegador.
+- Varios canales a la vez, con historial reciente de cada uno.
+- Emotes de Kick y de 7TV.
+- Mensajes eliminados, baneos y mensajes fijados en tiempo real.
+- Insignias personalizadas que solo se ven dentro de esta app.
 
-## Notas
-- Si no salen los emotes de 7TV, mira la consola del servidor: imprime `emotes <canal>: kick=… 7tv_global=… 7tv_canal=…`.
-- Se usan direcciones no oficiales de Kick (`web.kick.com`, `kick.com/api/v2`); pueden cambiar o bloquear tu IP si hay mucho tráfico.
-- Para desarrollar en tu PC: `pip install -r requirements.txt`, crea `.env` con `KICK_REDIRECT_URI=http://localhost:8765/callback` y ejecuta `python server.py`.
-- Copia de seguridad: `sessions.json` y `history.json` (no los subas a ningún repositorio).
+## Privacidad
 
-## Insignias personalizadas (solo se ven en esta app)
-1. Pon tu usuario de Kick en `ADMIN_USERS` del `.env` y reinicia (`sudo systemctl restart kickchat`).
-2. Entra a la app, inicia sesión con Kick y abre el menú ⋮ → "Insignias (dueño)".
-3. Crea una insignia (nombre + texto/emoji + color, o sube una imagen PNG/JPG/GIF/WEBP de hasta 150 KB) y asígnala escribiendo el usuario de Kick de quien la pagó.
-4. Aparece junto a su nombre en todos los chats de la app, para todos los usuarios, y puedes quitarla o borrarla cuando quieras.
-Se guardan en `custom_badges.json` y la carpeta `cbadges/` (respáldalos).
+La política de privacidad está en el archivo `privacy.html` de este repositorio.
 
-## Alternativa: Nginx en vez de Caddy
-```bash
-sudo apt install -y nginx certbot python3-certbot-nginx
-sudo cp nginx-chat.yerson.site.conf /etc/nginx/sites-available/chat.yerson.site
-sudo ln -s /etc/nginx/sites-available/chat.yerson.site /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
-sudo certbot --nginx -d chat.yerson.site
-```
-(Si usas Nginx no instales Caddy: ambos querrían los puertos 80 y 443.)
+## Aviso
+
+Este proyecto no está afiliado a Kick. Usa direcciones no oficiales de Kick que pueden cambiar sin aviso.
