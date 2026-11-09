@@ -1,0 +1,8 @@
+.env
+config.json
+sessions.json
+history.json
+venv/
+__pycache__/
+custom_badges.json
+cbadges/

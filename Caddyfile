@@ -1,0 +1,6 @@
+# Reemplaza chat.yerson.site por tu dominio (con el DNS apuntando a tu servidor).
+# Caddy saca el certificado HTTPS solo y soporta WebSocket sin configuración extra.
+chat.yerson.site {
+	encode gzip
+	reverse_proxy 127.0.0.1:8765
+}
